@@ -156,6 +156,7 @@ const ManageShareTable = ({
                 <Checkbox checked={allPageSelected} onChange={toggleAll} />
               </th>
               {sortableTh("id", "account.shares.table.id")}
+              {sortableTh("createdAt", "account.shares.table.createdAt")}
               {sortableTh("name", "account.shares.table.name")}
               {sortableTh("username", "admin.shares.table.username")}
               {sortableTh("views", "account.shares.table.visitors")}
@@ -183,6 +184,7 @@ const ManageShareTable = ({
                       />
                     </td>
                     <td>{share.id}</td>
+                    <td>{moment(share.createdAt).format("LLL")}</td>
                     <td>{share.name}</td>
                     <td>
                       {share.creator ? (
@@ -286,6 +288,7 @@ const sortValue = (share: MyShare, column: string) => {
   if (column == "views") return share.views;
   if (column == "size") return share.size;
   if (column == "expiration") return moment(share.expiration).unix();
+  if (column == "createdAt") return moment(share.createdAt).unix();
   if (column == "username") return share.creator?.username.toLowerCase() ?? "";
   if (column == "name") return (share.name ?? "").toLowerCase();
   return share.id.toLowerCase();
