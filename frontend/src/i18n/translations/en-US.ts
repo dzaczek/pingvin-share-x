@@ -311,6 +311,26 @@ export default {
   "admin.shares.edit.delete.description":
     "Do you really want to delete this share?",
 
+  "admin.shares.search": "Search",
+  "admin.shares.filter.quickRange": "Created in the last...",
+  "admin.shares.filter.range.15m": "Last 15 minutes",
+  "admin.shares.filter.range.1h": "Last hour",
+  "admin.shares.filter.range.6h": "Last 6 hours",
+  "admin.shares.filter.range.12h": "Last 12 hours",
+  "admin.shares.filter.range.1d": "Last day",
+  "admin.shares.filter.range.2d": "Last 2 days",
+  "admin.shares.filter.range.3d": "Last 3 days",
+  "admin.shares.filter.range.7d": "Last 7 days",
+  "admin.shares.filter.range.older7d": "Older than 7 days",
+  "admin.shares.filter.createdFrom": "Created from",
+  "admin.shares.filter.createdTo": "Created to",
+  "admin.shares.refresh": "Refresh",
+  "admin.shares.refresh.now": "Refresh now",
+  "admin.shares.button.delete-selected": "Delete selected ({count})",
+  "admin.shares.modal.delete-selected.title": "Delete {count} shares",
+  "admin.shares.modal.delete-selected.description":
+    "Do you really want to delete these shares?",
+
   // END /admin/shares
 
   // /upload
