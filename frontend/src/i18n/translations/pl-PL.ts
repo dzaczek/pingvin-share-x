@@ -244,6 +244,10 @@ export default {
   "admin.shares.table.deletes": "Zostanie usunięte",
   "admin.shares.edit.delete.title": "Usuń udostępnianie: {id}",
   "admin.shares.edit.delete.description": "Czy na pewno chcesz usunąć to udostępnienie?",
+  "admin.shares.search": "Szukaj",
+  "admin.shares.button.delete-selected": "Usuń zaznaczone ({count})",
+  "admin.shares.modal.delete-selected.title": "Usuń udostępnienia: {count}",
+  "admin.shares.modal.delete-selected.description": "Czy na pewno chcesz usunąć zaznaczone udostępnienia?",
   // END /admin/shares
 
   // /upload
