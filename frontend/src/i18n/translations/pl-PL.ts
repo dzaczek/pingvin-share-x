@@ -257,6 +257,8 @@ export default {
   "admin.shares.filter.range.older7d": "Starsze niż 7 dni",
   "admin.shares.filter.createdFrom": "Utworzone od",
   "admin.shares.filter.createdTo": "Utworzone do",
+  "admin.shares.refresh": "Odświeżanie",
+  "admin.shares.refresh.now": "Odśwież teraz",
   "admin.shares.button.delete-selected": "Usuń zaznaczone ({count})",
   "admin.shares.modal.delete-selected.title": "Usuń udostępnienia: {count}",
   "admin.shares.modal.delete-selected.description": "Czy na pewno chcesz usunąć zaznaczone udostępnienia?",
