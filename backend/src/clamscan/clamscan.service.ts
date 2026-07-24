@@ -14,6 +14,8 @@ const clamscanConfig = {
   preference: "clamdscan",
 };
 const RETRY_INTERVAL_MS = 60_000;
+const SCAN_RETRY_ATTEMPTS = 3;
+const SCAN_RETRY_DELAY_MS = 3_000;
 
 @Injectable()
 export class ClamScanService {
@@ -44,6 +46,24 @@ export class ClamScanService {
     }
 
     return this.clamScan;
+  }
+
+  // isInfected() can fail mid-scan if ClamAV restarts, retry a few times
+  // before giving up so a short restart doesn't get treated as "file is clean"
+  private async scanFile(
+    clamScan: NodeClam,
+    filePath: string,
+  ): Promise<{ isInfected: boolean; failed: boolean }> {
+    for (let attempt = 1; attempt <= SCAN_RETRY_ATTEMPTS; attempt++) {
+      try {
+        const { isInfected } = await clamScan.isInfected(filePath);
+        return { isInfected: !!isInfected, failed: false };
+      } catch {
+        if (attempt === SCAN_RETRY_ATTEMPTS) break;
+        await new Promise((r) => setTimeout(r, SCAN_RETRY_DELAY_MS));
+      }
+    }
+    return { isInfected: false, failed: true };
   }
 
   async check(shareId: string) {
@@ -84,9 +104,16 @@ export class ClamScanService {
             (fileObj.file as any).on("error", reject);
           });
 
-          const { isInfected } = await clamScan
-            .isInfected(tmpPath)
-            .catch(() => ({ isInfected: false }));
+          const { isInfected, failed } = await this.scanFile(
+            clamScan,
+            tmpPath,
+          );
+
+          if (failed) {
+            this.logger.error(
+              `ClamAV scan could not complete for file ${f.id} (${f.name}) in share ${shareId} after ${SCAN_RETRY_ATTEMPTS} attempts, file was not confirmed clean`,
+            );
+          }
 
           if (isInfected) infectedFiles.push({ id: f.id, name: f.name });
 
@@ -116,16 +143,20 @@ export class ClamScanService {
     }
 
     for (const fileId of files) {
-      const { isInfected } = await clamScan
-        .isInfected(`${SHARE_DIRECTORY}/${shareId}/${fileId}`)
-        .catch(() => {
-          this.logger.log("ClamAV is not active");
-          return { isInfected: false };
-        });
+      const { isInfected, failed } = await this.scanFile(
+        clamScan,
+        `${SHARE_DIRECTORY}/${shareId}/${fileId}`,
+      );
 
       const fileName = (
         await this.prisma.file.findUnique({ where: { id: fileId } })
       ).name;
+
+      if (failed) {
+        this.logger.error(
+          `ClamAV scan could not complete for file ${fileId} (${fileName}) in share ${shareId} after ${SCAN_RETRY_ATTEMPTS} attempts, file was not confirmed clean`,
+        );
+      }
 
       if (isInfected) {
         infectedFiles.push({ id: fileId, name: fileName });
