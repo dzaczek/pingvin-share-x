@@ -1,7 +1,7 @@
 services:
   pingvin-share-x:
     container_name: pingvin-share-x
-    image: smp46/pingvin-share-x # or ghcr.io/smp46/pingvin-share-x
+    build: .
     restart: unless-stopped
     ports:
       - 3000:3000
