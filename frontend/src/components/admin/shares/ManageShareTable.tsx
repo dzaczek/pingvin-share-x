@@ -1,5 +1,6 @@
 import {
   ActionIcon,
+  Badge,
   Box,
   Button,
   Checkbox,
@@ -321,7 +322,18 @@ const ManageShareTable = ({
                     </td>
                     <td>{moment(share.createdAt).format("LLL")}</td>
                     <td>{share.id}</td>
-                    <td>{share.name}</td>
+                    <td>
+                      <Group spacing="xs" noWrap>
+                        {share.name}
+                        {share.removedReason && (
+                          <HoverTip label={share.removedReason}>
+                            <Badge color="red" variant="light" size="sm">
+                              <FormattedMessage id="admin.shares.table.removed" />
+                            </Badge>
+                          </HoverTip>
+                        )}
+                      </Group>
+                    </td>
                     <td>
                       {share.creator ? (
                         share.creator.username

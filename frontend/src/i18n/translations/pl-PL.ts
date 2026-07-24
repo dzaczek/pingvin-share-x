@@ -242,6 +242,7 @@ export default {
   "admin.shares.table.visitors": "Odwiedzający",
   "admin.shares.table.expires": "Wygasa",
   "admin.shares.table.deletes": "Zostanie usunięte",
+  "admin.shares.table.removed": "Usunięty",
   "admin.shares.edit.delete.title": "Usuń udostępnianie: {id}",
   "admin.shares.edit.delete.description": "Czy na pewno chcesz usunąć to udostępnienie?",
   // END /admin/shares

@@ -50,6 +50,7 @@ export type MyShare = Omit<Share, "hasPassword"> & {
   views: number;
   createdAt: Date;
   security?: MyShareSecurity;
+  removedReason?: string;
 };
 
 export type MyReverseShare = {
