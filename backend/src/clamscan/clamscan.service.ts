@@ -26,24 +26,31 @@ export class ClamScanService {
     private prisma: PrismaService,
   ) {}
 
-  private clamScan: NodeClam | null = null;
+  private clamScan: Promise<NodeClam | null> | null = null;
   private lastInitAttempt = 0;
 
   // ClamAV might not be reachable yet (or anymore) when this runs, so retry
-  // on a cooldown instead of caching a failed connection forever
-  private async getClamScan(): Promise<NodeClam | null> {
+  // on a cooldown instead of caching a failed connection forever. The promise
+  // itself is cached so concurrent scans share one init instead of skipping.
+  private getClamScan(): Promise<NodeClam | null> {
     if (this.clamScan) return this.clamScan;
 
     const now = Date.now();
-    if (now - this.lastInitAttempt < RETRY_INTERVAL_MS) return null;
+    if (now - this.lastInitAttempt < RETRY_INTERVAL_MS)
+      return Promise.resolve(null);
     this.lastInitAttempt = now;
 
-    try {
-      this.clamScan = await new NodeClam().init(clamscanConfig);
-      this.logger.log("ClamAV is active");
-    } catch {
-      this.logger.log("ClamAV is not active");
-    }
+    this.clamScan = new NodeClam()
+      .init(clamscanConfig)
+      .then((res) => {
+        this.logger.log("ClamAV is active");
+        return res;
+      })
+      .catch(() => {
+        this.logger.log("ClamAV is not active");
+        this.clamScan = null;
+        return null;
+      });
 
     return this.clamScan;
   }
