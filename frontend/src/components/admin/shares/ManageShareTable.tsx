@@ -55,7 +55,10 @@ const ManageShareTable = ({
   const [quickRange, setQuickRange] = useState<string | null>(null);
   const [createdFrom, setCreatedFrom] = useState("");
   const [createdTo, setCreatedTo] = useState("");
-  const [sort, setSort] = useState<{ column: string; asc: boolean }>();
+  const [sort, setSort] = useState<{ column: string; asc: boolean }>({
+    column: "createdAt",
+    asc: false,
+  });
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [refreshInterval, setRefreshInterval] = useState<string | null>(null);
@@ -288,8 +291,8 @@ const ManageShareTable = ({
               <th style={{ width: 30 }}>
                 <Checkbox checked={allSelected} onChange={toggleAll} />
               </th>
-              {sortableTh("id", "account.shares.table.id")}
               {sortableTh("createdAt", "account.shares.table.createdAt")}
+              {sortableTh("id", "account.shares.table.id")}
               {sortableTh("name", "account.shares.table.name")}
               {sortableTh("username", "admin.shares.table.username")}
               {sortableTh("views", "account.shares.table.visitors")}
@@ -316,8 +319,8 @@ const ManageShareTable = ({
                         onChange={() => toggleRow(share.id)}
                       />
                     </td>
-                    <td>{share.id}</td>
                     <td>{moment(share.createdAt).format("LLL")}</td>
+                    <td>{share.id}</td>
                     <td>{share.name}</td>
                     <td>
                       {share.creator ? (
