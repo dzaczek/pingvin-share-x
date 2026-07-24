@@ -71,10 +71,26 @@ const Shares = () => {
       },
       confirmProps: { color: "red" },
       onConfirm: async () => {
-        await Promise.all(
-          toDelete.map((share) => shareService.remove(share.id)),
-        ).catch(toast.axiosError);
+        // one by one on purpose, sqlite has connection_limit=1 and Promise.all
+        // would race, plus its fail-fast behaviour was masking partial results
+        let failed = 0;
+        for (const share of toDelete) {
+          try {
+            await shareService.remove(share.id);
+          } catch (err: any) {
+            // a 404 means someone (or clamav) already deleted it, that is fine
+            if (err?.response?.status !== 404) failed++;
+          }
+        }
         getShares();
+        if (failed > 0) {
+          toast.error(
+            t("admin.shares.notify.bulk-delete-failed", {
+              failed,
+              total: toDelete.length,
+            }),
+          );
+        }
       },
     });
   };

@@ -331,6 +331,8 @@ export default {
   "admin.shares.modal.delete-selected.title": "Delete {count} shares",
   "admin.shares.modal.delete-selected.description":
     "Do you really want to delete these shares?",
+  "admin.shares.notify.bulk-delete-failed":
+    "Could not delete {failed} of {total} shares, the list has been refreshed",
 
   // END /admin/shares
 
