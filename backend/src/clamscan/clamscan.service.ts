@@ -64,11 +64,14 @@ export class ClamScanService {
     for (let attempt = 1; attempt <= SCAN_RETRY_ATTEMPTS; attempt++) {
       try {
         const { isInfected } = await clamScan.isInfected(filePath);
-        return { isInfected: !!isInfected, failed: false };
+        // null means clamav was unable to scan, treat it like a failed attempt
+        if (typeof isInfected === "boolean")
+          return { isInfected, failed: false };
       } catch {
-        if (attempt === SCAN_RETRY_ATTEMPTS) break;
-        await new Promise((r) => setTimeout(r, SCAN_RETRY_DELAY_MS));
+        // fall through to the retry below
       }
+      if (attempt < SCAN_RETRY_ATTEMPTS)
+        await new Promise((r) => setTimeout(r, SCAN_RETRY_DELAY_MS));
     }
     return { isInfected: false, failed: true };
   }
