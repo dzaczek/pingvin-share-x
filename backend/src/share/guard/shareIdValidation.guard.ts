@@ -30,8 +30,8 @@ export class IdValidation implements CanActivate {
       return true;
     }
 
-    // Regular expression to check for Base64
-    const isBase64 = /^[a-zA-Z0-9-]*={0,2}$/.test(id);
+    // has to accept everything the create share validation allows, underscore included
+    const isBase64 = /^[a-zA-Z0-9_-]*={0,2}$/.test(id);
 
     if (!isBase64) {
       throw new BadRequestException(this.i18n.t("file.invalidIdFormat"));

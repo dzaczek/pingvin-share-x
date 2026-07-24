@@ -12,8 +12,9 @@ import {
 } from "../types/share.type";
 import api from "./api.service";
 
+// has to accept everything the create share validation allows, underscore included
 const isValidId = (id: string) => {
-  return /^[a-zA-Z0-9-]+$/.test(id);
+  return /^[a-zA-Z0-9_-]+$/.test(id);
 };
 
 const list = async (): Promise<MyShare[]> => {
