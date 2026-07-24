@@ -22,7 +22,8 @@ export class ShareOwnerGuard extends JwtGuard {
   }
 
   isBase64(toCheck: string) {
-    const isBase64 = /^[a-zA-Z0-9-]*={0,2}$/.test(toCheck);
+    // has to accept everything the create share validation allows, underscore included
+    const isBase64 = /^[a-zA-Z0-9_-]*={0,2}$/.test(toCheck);
     return isBase64;
   }
 
