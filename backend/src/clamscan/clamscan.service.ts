@@ -13,6 +13,8 @@ const clamscanConfig = {
   },
   preference: "clamdscan",
 };
+const RETRY_INTERVAL_MS = 60_000;
+
 @Injectable()
 export class ClamScanService {
   private readonly logger = new Logger(ClamScanService.name);
@@ -22,19 +24,30 @@ export class ClamScanService {
     private prisma: PrismaService,
   ) {}
 
-  private ClamScan: Promise<NodeClam | null> = new NodeClam()
-    .init(clamscanConfig)
-    .then((res) => {
+  private clamScan: NodeClam | null = null;
+  private lastInitAttempt = 0;
+
+  // ClamAV might not be reachable yet (or anymore) when this runs, so retry
+  // on a cooldown instead of caching a failed connection forever
+  private async getClamScan(): Promise<NodeClam | null> {
+    if (this.clamScan) return this.clamScan;
+
+    const now = Date.now();
+    if (now - this.lastInitAttempt < RETRY_INTERVAL_MS) return null;
+    this.lastInitAttempt = now;
+
+    try {
+      this.clamScan = await new NodeClam().init(clamscanConfig);
       this.logger.log("ClamAV is active");
-      return res;
-    })
-    .catch(() => {
+    } catch {
       this.logger.log("ClamAV is not active");
-      return null;
-    });
+    }
+
+    return this.clamScan;
+  }
 
   async check(shareId: string) {
-    const clamScan = await this.ClamScan;
+    const clamScan = await this.getClamScan();
 
     if (!clamScan) {
       return [];
