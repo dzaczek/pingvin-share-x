@@ -64,7 +64,7 @@ const traverseDirectory = async (entry: any, path = ""): Promise<File[]> => {
     }
 
     const promises = entries.map((e) =>
-      traverseDirectory(e, path ? `${path}/${entry.name}` : entry.name)
+      traverseDirectory(e, path ? `${path}/${entry.name}` : entry.name),
     );
     const results = await Promise.all(promises);
     return results.flat();
@@ -73,7 +73,15 @@ const traverseDirectory = async (entry: any, path = ""): Promise<File[]> => {
 };
 
 const getFilesFromEvent = async (event: any): Promise<any[]> => {
-  const items = event.dataTransfer ? event.dataTransfer.items : event.target.files;
+  // Chrome opens the file picker through the File System Access API, which
+  // hands back FileSystemFileHandle[] instead of a change/drop event
+  if (Array.isArray(event)) {
+    return Promise.all(event.map((handle: any) => handle.getFile()));
+  }
+
+  const items = event.dataTransfer
+    ? event.dataTransfer.items
+    : event.target.files;
   if (!items) return [];
 
   const filePromises: Promise<File[]>[] = [];
@@ -215,7 +223,11 @@ const Dropzone = ({
           >
             <TbFolder style={{ marginRight: 6 }} />
             <FormattedMessage
-              id={currentFilesSize > 0 ? "upload.button.folder.append" : "upload.button.folder"}
+              id={
+                currentFilesSize > 0
+                  ? "upload.button.folder.append"
+                  : "upload.button.folder"
+              }
             />
           </Button>
         )}
