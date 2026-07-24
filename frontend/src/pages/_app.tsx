@@ -316,7 +316,7 @@ function App({ Component, pageProps }: AppProps) {
                       >
                         <div>
                           <Header />
-                          <Container>
+                          <Container fluid={route === "/admin/shares"}>
                             <Component {...pageProps} />
                           </Container>
                         </div>
