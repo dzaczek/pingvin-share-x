@@ -1,6 +1,11 @@
 import moment from "moment";
 import { Timespan } from "../types/timespan.type";
 
+// Note: stringToTimespan and timespanToString also exist in
+// backend/src/utils/date.util.ts. They are copied rather than shared, so a fix
+// here does not reach the other one. Both sides have their own tests, and
+// neither would notice the two disagreeing.
+
 export const getExpirationPreview = (
   messages: {
     neverExpires: string;
