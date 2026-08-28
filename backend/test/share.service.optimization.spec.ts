@@ -11,6 +11,7 @@ import { SystemService } from '../src/system/system.service';
 import { ShareAccessLogService } from '../src/shareAccessLog/shareAccessLog.service';
 import { I18nService } from 'nestjs-i18n';
 import { ConfigService as AppConfigService } from '../src/config/config.service';
+import * as fs from 'fs';
 
 describe('ShareService Optimization', () => {
   let shareService: ShareService;
@@ -32,6 +33,9 @@ describe('ShareService Optimization', () => {
             share: {
               findUnique: jest.fn(),
               update: jest.fn(),
+              create: jest.fn().mockImplementation((data) => {
+                  return { id: data.data.id, ...data.data };
+              }),
             },
             $transaction: jest.fn(),
           },
@@ -50,6 +54,7 @@ describe('ShareService Optimization', () => {
           useValue: {
             get: jest.fn().mockImplementation((key) => {
               if (key === 'share.enableUserRecipients') return true;
+              if (key === 'share.maxExpiration') return { unit: 'days', value: 7 };
               return false;
             }),
           },
@@ -57,10 +62,10 @@ describe('ShareService Optimization', () => {
         { provide: FileService, useValue: {} },
         { provide: EmailService, useValue: { sendMailToShareRecipients: jest.fn() } },
         { provide: JwtService, useValue: {} },
-        { provide: ReverseShareService, useValue: {} },
+        { provide: ReverseShareService, useValue: { getByToken: jest.fn().mockResolvedValue(null) } },
         { provide: ClamScanService, useValue: { checkAndRemove: jest.fn() } },
-        { provide: SystemService, useValue: {} },
-        { provide: ShareAccessLogService, useValue: {} },
+        { provide: SystemService, useValue: { getSystemInfo: jest.fn().mockResolvedValue(null) } },
+        { provide: ShareAccessLogService, useValue: { log: jest.fn() } },
         { provide: I18nService, useValue: { t: jest.fn() } },
         { provide: 'bull_Queue_jobs', useValue: {} },
       ],
@@ -143,5 +148,36 @@ describe('ShareService Optimization', () => {
       expect(prismaService.$transaction).not.toHaveBeenCalled();
     });
 
+  });
+
+  describe('create optimization test', () => {
+    it('should be fast and use async I/O', async () => {
+      // Mock fs functions
+      const mkdirSyncSpy = jest.spyOn(fs, 'mkdirSync').mockImplementation();
+      const mkdirAsyncSpy = jest.spyOn(fs.promises, 'mkdir').mockResolvedValue(undefined);
+
+      const shareMock: any = {
+        id: 'test_share',
+        size: 0,
+        expiration: 'never',
+        security: { password: '' },
+        recipients: [],
+        name: 'test',
+        description: ''
+      };
+
+      const userMock: any = {
+        isAdmin: true
+      };
+
+      const start = Date.now();
+      await shareService.create(shareMock, userMock);
+      const end = Date.now();
+
+      console.log(`Execution time: ${end - start} ms`);
+
+      expect(mkdirSyncSpy).not.toHaveBeenCalled();
+      expect(mkdirAsyncSpy).toHaveBeenCalled();
+    });
   });
 });

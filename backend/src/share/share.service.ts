@@ -128,7 +128,7 @@ export class ShareService {
       }
     }
 
-    fs.mkdirSync(`${SHARE_DIRECTORY}/${share.id}`, {
+    await fs.promises.mkdir(`${SHARE_DIRECTORY}/${share.id}`, {
       recursive: true,
     });
 
