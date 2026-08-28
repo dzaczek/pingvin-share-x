@@ -214,6 +214,10 @@ export class ConfigService extends EventEmitter {
   }
 
   validateConfigVariable(key: string, value: string | number | boolean) {
+    const type = this.configVariables.find(
+      (variable) => `${variable.category}.${variable.name}` === key,
+    )?.type;
+
     const validations = [
       {
         key: "share.shareIdLength",
@@ -231,37 +235,27 @@ export class ConfigService extends EventEmitter {
           "Zip compression level must be between 0 and 9",
         ),
       },
+      {
+        type: "timespan",
+        condition: (value: any) => {
+          // null means "clear this and fall back to the default", which is a
+          // legitimate thing to send and is not a timespan to check
+          if (value === null) return true;
+          // -1 is how retention is switched off, and the expiry job checks for it
+          const allowDisabled = key === "share.fileRetentionPeriod";
+          return isValidTimespan(String(value), allowDisabled);
+        },
+        message: this.t(
+          "config.timespanValidation",
+          "Timespan must be a whole number of {units}",
+          { units: TIMESPAN_UNITS.join(", ") },
+        ),
+      },
     ];
 
-    const validation = validations.find((validation) => validation.key == key);
+    const validation = validations.find((v) => v.key === key || (v.type && v.type === type));
     if (validation && !validation.condition(value as any)) {
       throw new BadRequestException(validation.message);
-    }
-
-    // A timespan is skipped by the type check above, since it arrives as a
-    // string whatever it is meant to hold, so this is the only place it gets
-    // looked at. Left unchecked, "banana" parses to a threshold of now, which
-    // makes the retention period zero, and a negative one lands in the future
-    // and selects shares that have not expired.
-    const type = this.configVariables.find(
-      (variable) => `${variable.category}.${variable.name}` === key,
-    )?.type;
-
-    // null means "clear this and fall back to the default", which is a
-    // legitimate thing to send and is not a timespan to check
-    if (type === "timespan" && value !== null) {
-      // -1 is how retention is switched off, and the expiry job checks for it
-      const allowDisabled = key === "share.fileRetentionPeriod";
-
-      if (!isValidTimespan(String(value), allowDisabled)) {
-        throw new BadRequestException(
-          this.t(
-            "config.timespanValidation",
-            "Timespan must be a whole number of {units}",
-            { units: TIMESPAN_UNITS.join(", ") },
-          ),
-        );
-      }
     }
   }
 
