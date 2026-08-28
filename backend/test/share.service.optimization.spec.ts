@@ -151,11 +151,19 @@ describe('ShareService Optimization', () => {
   });
 
   describe('create optimization test', () => {
-    it('should be fast and use async I/O', async () => {
-      // Mock fs functions
-      const mkdirSyncSpy = jest.spyOn(fs, 'mkdirSync').mockImplementation();
-      const mkdirAsyncSpy = jest.spyOn(fs.promises, 'mkdir').mockResolvedValue(undefined);
+    let mkdirSyncSpy: jest.SpyInstance;
+    let mkdirAsyncSpy: jest.SpyInstance;
 
+    beforeEach(() => {
+      mkdirSyncSpy = jest.spyOn(fs, 'mkdirSync').mockImplementation();
+      mkdirAsyncSpy = jest.spyOn(fs.promises, 'mkdir').mockResolvedValue(undefined);
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it('should use async I/O to avoid blocking the event loop', async () => {
       const shareMock: any = {
         id: 'test_share',
         size: 0,
@@ -170,11 +178,7 @@ describe('ShareService Optimization', () => {
         isAdmin: true
       };
 
-      const start = Date.now();
       await shareService.create(shareMock, userMock);
-      const end = Date.now();
-
-      console.log(`Execution time: ${end - start} ms`);
 
       expect(mkdirSyncSpy).not.toHaveBeenCalled();
       expect(mkdirAsyncSpy).toHaveBeenCalled();
