@@ -42,7 +42,20 @@ describe("stringToTimespan", () => {
 
 describe("timespanToString", () => {
   it("puts the pair back together the way it is stored", () => {
-    expect(timespanToString({ value: 7, unit: "days" } as any)).toBe("7 days");
+    expect(timespanToString({ value: 7, unit: "days" })).toBe("7 days");
+  });
+
+  it("handles zero values", () => {
+    expect(timespanToString({ value: 0, unit: "hours" })).toBe("0 hours");
+  });
+
+  it("handles negative values", () => {
+    expect(timespanToString({ value: -1, unit: "days" })).toBe("-1 days");
+  });
+
+  it("works with different valid units", () => {
+    expect(timespanToString({ value: 3, unit: "months" })).toBe("3 months");
+    expect(timespanToString({ value: 90, unit: "minutes" })).toBe("90 minutes");
   });
 
   // the settings form reads a value, edits it and writes it back, so the two
