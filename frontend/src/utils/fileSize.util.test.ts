@@ -14,10 +14,15 @@ describe("byteToHumanSizeString", () => {
     expect(byteToHumanSizeString(1000)).toBe("1.0 KB");
     expect(byteToHumanSizeString(1_500_000)).toBe("1.5 MB");
     expect(byteToHumanSizeString(2_000_000_000)).toBe("2.0 GB");
+    expect(byteToHumanSizeString(2_000_000_000_000)).toBe("2.0 TB");
   });
 
   it("spells zero out rather than showing 0.0 B", () => {
     expect(byteToHumanSizeString(0)).toBe("0 Byte");
+  });
+
+  it("returns 0 Byte for negative values", () => {
+    expect(byteToHumanSizeString(-1000)).toBe("0 Byte");
   });
 
   // powers of 1000, not 1024, so a "gigabyte" here is the decimal one
@@ -30,7 +35,12 @@ describe("byteToUnitAndSize", () => {
   it("splits a byte count into the number and unit shown in the form", () => {
     expect(byteToUnitAndSize(1_000_000)).toEqual({ size: 1, unit: "MB" });
     expect(byteToUnitAndSize(1_500_000)).toEqual({ size: 1.5, unit: "MB" });
+    expect(byteToUnitAndSize(2_000_000_000_000)).toEqual({ size: 2, unit: "TB" });
     expect(byteToUnitAndSize(0)).toEqual({ size: 0, unit: "B" });
+  });
+
+  it("returns zero bytes for negative values", () => {
+    expect(byteToUnitAndSize(-1000)).toEqual({ size: 0, unit: "B" });
   });
 
   it("rounds to one decimal place", () => {
@@ -42,6 +52,7 @@ describe("unitAndSizeToByte", () => {
   it("turns the pair back into bytes", () => {
     expect(unitAndSizeToByte("MB", 1)).toBe(1_000_000);
     expect(unitAndSizeToByte("GB", 2.5)).toBe(2_500_000_000);
+    expect(unitAndSizeToByte("TB", 2)).toBe(2_000_000_000_000);
     expect(unitAndSizeToByte("B", 512)).toBe(512);
   });
 
