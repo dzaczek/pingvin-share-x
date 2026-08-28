@@ -26,6 +26,11 @@ const build = () => {
     user: {
       findMany: async () => users,
       delete: async ({ where }: any) => void deletedUsers.push(where.id),
+      deleteMany: async ({ where }: any) => {
+        if (where.id?.in) {
+          where.id.in.forEach((id: string) => deletedUsers.push(id));
+        }
+      },
     },
   };
   const fileService = {

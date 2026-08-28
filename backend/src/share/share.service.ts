@@ -406,7 +406,9 @@ export class ShareService {
   // Blocking hides a share from everyone but admins and keeps the files on
   // disk, so a report can be looked into instead of deleted straight away.
   async block(shareId: string, reason?: string) {
-    const share = await this.prisma.share.findUnique({ where: { id: shareId } });
+    const share = await this.prisma.share.findUnique({
+      where: { id: shareId },
+    });
     if (!share) throw new NotFoundException(this.i18n.t("share.notFound"));
 
     return this.prisma.share.update({
@@ -416,7 +418,9 @@ export class ShareService {
   }
 
   async unblock(shareId: string) {
-    const share = await this.prisma.share.findUnique({ where: { id: shareId } });
+    const share = await this.prisma.share.findUnique({
+      where: { id: shareId },
+    });
     if (!share) throw new NotFoundException(this.i18n.t("share.notFound"));
 
     return this.prisma.share.update({

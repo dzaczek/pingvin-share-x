@@ -2,7 +2,13 @@ import { isValidTimespan } from "./timespan.util";
 
 describe("isValidTimespan", () => {
   it("accepts an amount and a unit it knows", () => {
-    for (const value of ["7 days", "0 days", "3 months", "90 minutes", "1 years"])
+    for (const value of [
+      "7 days",
+      "0 days",
+      "3 months",
+      "90 minutes",
+      "1 years",
+    ])
       expect(isValidTimespan(value)).toBe(true);
   });
 

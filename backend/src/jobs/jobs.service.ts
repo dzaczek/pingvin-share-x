@@ -276,11 +276,12 @@ export class JobsService {
   @Cron("0 * * * *")
   async deleteUnactivatedUsers() {
     const cutoff = moment().subtract(24, "hours").toDate();
+    const condition = {
+      isActivated: false,
+      createdAt: { lt: cutoff },
+    };
     const unactivatedUsers = await this.prisma.user.findMany({
-      where: {
-        isActivated: false,
-        createdAt: { lt: cutoff },
-      },
+      where: condition,
       include: { shares: true },
     });
 
@@ -303,15 +304,48 @@ export class JobsService {
       return;
     }
 
-    for (const user of unactivatedUsers) {
-      await Promise.all(
-        user.shares.map((share) => this.fileService.deleteAllFiles(share.id)),
+    const successfullyCleanedIds: string[] = [];
+    const chunkSize = 5;
+
+    for (let i = 0; i < unactivatedUsers.length; i += chunkSize) {
+      const batch = unactivatedUsers.slice(i, i + chunkSize);
+      const results = await Promise.allSettled(
+        batch.map(async (user) => {
+          await Promise.all(
+            user.shares.map((share) =>
+              this.fileService.deleteAllFiles(share.id),
+            ),
+          );
+          return user.id;
+        }),
       );
-      await this.prisma.user.delete({ where: { id: user.id } });
+
+      for (const result of results) {
+        if (result.status === "fulfilled") {
+          successfullyCleanedIds.push(result.value);
+        } else {
+          this.logger.error(
+            "Failed to delete files for an unactivated user",
+            result.reason instanceof Error
+              ? result.reason.stack
+              : String(result.reason),
+          );
+        }
+      }
     }
 
-    if (unactivatedUsers.length > 0) {
-      this.logger.log(`Deleted ${unactivatedUsers.length} unactivated users`);
+    if (successfullyCleanedIds.length > 0) {
+      await this.prisma.user.deleteMany({
+        where: {
+          id: {
+            in: successfullyCleanedIds,
+          },
+          ...condition,
+        },
+      });
+      this.logger.log(
+        `Deleted ${successfullyCleanedIds.length} unactivated users`,
+      );
     }
   }
 }
