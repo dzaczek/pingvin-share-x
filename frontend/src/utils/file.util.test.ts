@@ -4,8 +4,16 @@ import { filterDuplicateFiles, getNormalizedFileName } from "./file.util";
 // spells that path with backslashes. Everything downstream compares these as
 // strings, so two spellings of the same file would be treated as two files.
 
-const fileLike = (name: string, webkitRelativePath?: string) =>
-  ({ name, webkitRelativePath }) as unknown as File;
+const fileLike = (name: string, webkitRelativePath?: string) => {
+  const file = new File([""], name);
+  if (webkitRelativePath !== undefined) {
+    Object.defineProperty(file, "webkitRelativePath", {
+      value: webkitRelativePath,
+      writable: false,
+    });
+  }
+  return file;
+};
 
 describe("getNormalizedFileName", () => {
   it("uses the plain name when there is no folder", () => {
@@ -35,6 +43,12 @@ describe("getNormalizedFileName", () => {
 
   it("falls back to the name when the path is empty", () => {
     expect(getNormalizedFileName(fileLike("a.txt", ""))).toBe("a.txt");
+  });
+
+  it("normalizes the file name if webkitRelativePath is absent", () => {
+    expect(getNormalizedFileName(fileLike("/report.pdf"))).toBe("report.pdf");
+    expect(getNormalizedFileName(fileLike("\\report.pdf"))).toBe("report.pdf");
+    expect(getNormalizedFileName(fileLike("docs\\report.pdf"))).toBe("docs/report.pdf");
   });
 });
 
