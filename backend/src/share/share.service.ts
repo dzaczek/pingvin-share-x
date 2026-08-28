@@ -11,6 +11,7 @@ import { finished as streamFinished } from "stream/promises";
 import * as argon from "argon2";
 import * as crypto from "crypto";
 import * as fs from "fs";
+import * as path from "path";
 import * as moment from "moment";
 import { I18nService } from "nestjs-i18n";
 import { ClamScanService } from "src/clamscan/clamscan.service";
@@ -128,12 +129,15 @@ export class ShareService {
       }
     }
 
-    // Prevent path traversal issues flagged by CodeQL
-    if (share.id.includes('/') || share.id.includes('\\') || share.id === '..' || share.id === '.') {
+    // Ensure that share.id doesn't break out of SHARE_DIRECTORY
+    const sharePath = path.join(SHARE_DIRECTORY, share.id);
+    const resolvedSharePath = path.resolve(sharePath);
+    const resolvedShareDir = path.resolve(SHARE_DIRECTORY);
+    if (!resolvedSharePath.startsWith(resolvedShareDir) && !sharePath.startsWith(SHARE_DIRECTORY)) {
       throw new BadRequestException("Invalid share ID");
     }
 
-    await fs.promises.mkdir(`${SHARE_DIRECTORY}/${share.id}`, {
+    await fs.promises.mkdir(resolvedSharePath, {
       recursive: true,
     });
 
