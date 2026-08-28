@@ -37,6 +37,12 @@ describe("camelToKebab", () => {
   it("has nothing to do with an empty string", () => {
     expect(camelToKebab("")).toBe("");
   });
+
+  it("handles strings with numbers", () => {
+    // Note: Since the regex /([a-z])([A-Z])/g is used, numbers do not trigger a hyphen.
+    expect(camelToKebab("enable2FA")).toBe("enable2fa");
+    expect(camelToKebab("version2Update")).toBe("version2update");
+  });
 });
 
 describe("capitalizeFirstLetter", () => {
