@@ -57,4 +57,17 @@ describe("capitalizeFirstLetter", () => {
   it("leaves a leading character that has no capital form", () => {
     expect(capitalizeFirstLetter("3 days")).toBe("3 days");
   });
+
+  it("handles strings with multiple words correctly", () => {
+    expect(capitalizeFirstLetter("hello world")).toBe("Hello world");
+  });
+
+  it("handles strings starting with special characters or whitespace", () => {
+    expect(capitalizeFirstLetter(" hello")).toBe(" hello");
+    expect(capitalizeFirstLetter("!hello")).toBe("!hello");
+  });
+
+  it("handles unicode/extended characters correctly", () => {
+    expect(capitalizeFirstLetter("éclair")).toBe("Éclair");
+  });
 });
