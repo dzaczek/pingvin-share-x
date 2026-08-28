@@ -67,9 +67,9 @@ export class AuthTotpService {
       throw new BadRequestException(this.i18n.t("auth.invalidCode"));
     }
 
-    // Set the login token to used
-    await this.prisma.loginToken.update({
-      where: { token: token.token },
+    // Set all login tokens to used
+    await this.prisma.loginToken.updateMany({
+      where: { userId: token.user.id, used: false },
       data: { used: true },
     });
 
