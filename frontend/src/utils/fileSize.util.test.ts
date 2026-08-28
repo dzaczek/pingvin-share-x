@@ -33,6 +33,17 @@ describe("byteToUnitAndSize", () => {
     expect(byteToUnitAndSize(0)).toEqual({ size: 0, unit: "B" });
   });
 
+  it("handles different unit magnitudes correctly", () => {
+    expect(byteToUnitAndSize(500)).toEqual({ size: 500, unit: "B" });
+    expect(byteToUnitAndSize(999)).toEqual({ size: 999, unit: "B" });
+    expect(byteToUnitAndSize(1_000)).toEqual({ size: 1, unit: "KB" });
+    expect(byteToUnitAndSize(1_500)).toEqual({ size: 1.5, unit: "KB" });
+    expect(byteToUnitAndSize(999_999)).toEqual({ size: 1000, unit: "KB" }); // Rounds up 999.999 KB
+    expect(byteToUnitAndSize(1_000_000_000)).toEqual({ size: 1, unit: "GB" });
+    expect(byteToUnitAndSize(1_500_000_000)).toEqual({ size: 1.5, unit: "GB" });
+    expect(byteToUnitAndSize(1_000_000_000_000)).toEqual({ size: 1, unit: "TB" });
+  });
+
   it("rounds to one decimal place", () => {
     expect(byteToUnitAndSize(1_234_567)).toEqual({ size: 1.2, unit: "MB" });
   });
