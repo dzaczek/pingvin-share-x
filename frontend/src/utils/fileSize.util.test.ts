@@ -40,9 +40,20 @@ describe("byteToUnitAndSize", () => {
 
 describe("unitAndSizeToByte", () => {
   it("turns the pair back into bytes", () => {
+    expect(unitAndSizeToByte("B", 512)).toBe(512);
+    expect(unitAndSizeToByte("KB", 10)).toBe(10_000);
     expect(unitAndSizeToByte("MB", 1)).toBe(1_000_000);
     expect(unitAndSizeToByte("GB", 2.5)).toBe(2_500_000_000);
-    expect(unitAndSizeToByte("B", 512)).toBe(512);
+    expect(unitAndSizeToByte("TB", 1.5)).toBe(1_500_000_000_000);
+  });
+
+  it("handles zero correctly", () => {
+    expect(unitAndSizeToByte("MB", 0)).toBe(0);
+    expect(unitAndSizeToByte("B", 0)).toBe(0);
+  });
+
+  it("handles negative sizes", () => {
+    expect(unitAndSizeToByte("GB", -1)).toBe(-1_000_000_000);
   });
 
   // indexOf returns -1 for a unit it does not know, and 1000 to the power of
