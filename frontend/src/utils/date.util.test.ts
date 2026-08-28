@@ -38,6 +38,19 @@ describe("stringToTimespan", () => {
     });
     expect(stringToTimespan("7")).toEqual({ value: 7, unit: undefined });
   });
+
+  it("handles float numbers by truncating them due to parseInt", () => {
+    expect(stringToTimespan("1.5 days")).toEqual({ value: 1, unit: "days" });
+  });
+
+  it("handles empty strings and multiple spaces", () => {
+    expect(stringToTimespan("")).toEqual({ value: NaN, unit: undefined });
+    expect(stringToTimespan("  ")).toEqual({ value: NaN, unit: "" });
+  });
+
+  it("gives no unit if space is missing", () => {
+    expect(stringToTimespan("7days")).toEqual({ value: 7, unit: undefined });
+  });
 });
 
 describe("timespanToString", () => {
