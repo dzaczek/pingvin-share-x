@@ -11,12 +11,13 @@ import { useClipboard } from "@mantine/hooks";
 import { useModals } from "@mantine/modals";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { TbDownload, TbEye, TbLink, TbClipboard } from "react-icons/tb";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import useConfig from "../../hooks/config.hook";
 import useTranslate from "../../hooks/useTranslate.hook";
 import shareService from "../../services/share.service";
 import { FileMetaData } from "../../types/File.type";
 import { Share } from "../../types/share.type";
+import { getAnonymousWarningConfigKeyForLocale } from "../../utils/anonymousWarningMessage.util";
 import { byteToHumanSizeString } from "../../utils/fileSize.util";
 import toast from "../../utils/toast.util";
 import TableSortIcon, { TableSort } from "../core/SortIcon";
@@ -57,6 +58,12 @@ const FileList = ({
   const config = useConfig();
   const modals = useModals();
   const t = useTranslate();
+  const { locale } = useIntl();
+
+  const anonymousWarningOverrideKey = getAnonymousWarningConfigKeyForLocale(locale);
+  const anonymousWarningMessage = anonymousWarningOverrideKey
+    ? config.get(anonymousWarningOverrideKey)
+    : "";
 
   const [sort, setSort] = useState<TableSort>({
     property: "name",
@@ -210,6 +217,7 @@ const FileList = ({
                               showAnonymousDownloadWarningModal(
                                 modals,
                                 download,
+                                anonymousWarningMessage,
                               );
                             } else {
                               await download();
