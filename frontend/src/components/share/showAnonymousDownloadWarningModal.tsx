@@ -3,10 +3,12 @@ import { useModals } from "@mantine/modals";
 import { ModalsContextProps } from "@mantine/modals/lib/context";
 import { useEffect, useState } from "react";
 import { TbAlertTriangle } from "react-icons/tb";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
+import useConfig from "../../hooks/config.hook";
 import useTranslate, {
   translateOutsideContext,
 } from "../../hooks/useTranslate.hook";
+import { getAnonymousWarningConfigKeyForLocale } from "../../utils/anonymousWarningMessage.util";
 
 const COUNTDOWN_SECONDS = 5;
 
@@ -24,7 +26,12 @@ const showAnonymousDownloadWarningModal = (
 const Body = ({ confirmCallback }: { confirmCallback: () => void }) => {
   const modals = useModals();
   const t = useTranslate();
+  const config = useConfig();
+  const { locale } = useIntl();
   const [secondsLeft, setSecondsLeft] = useState(COUNTDOWN_SECONDS);
+
+  const overrideKey = getAnonymousWarningConfigKeyForLocale(locale);
+  const customMessage = overrideKey ? config.get(overrideKey) : "";
 
   useEffect(() => {
     if (secondsLeft <= 0) return;
@@ -35,7 +42,9 @@ const Body = ({ confirmCallback }: { confirmCallback: () => void }) => {
   return (
     <Stack align="stretch">
       <Alert variant="light" color="yellow" icon={<TbAlertTriangle />}>
-        <FormattedMessage id="share.modal.anonymous-warning.description" />
+        {customMessage || (
+          <FormattedMessage id="share.modal.anonymous-warning.description" />
+        )}
       </Alert>
 
       <Button

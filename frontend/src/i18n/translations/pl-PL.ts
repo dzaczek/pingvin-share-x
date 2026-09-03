@@ -563,6 +563,8 @@ export default {
   "admin.config.share.warn-anonymous-shares.description": "Pokazuj odwiedzającym ostrzeżenie, gdy udostępnienie zostało utworzone bez zalogowanego konta, i wymagaj krótkiego odliczania przed pobraniem jego plików.",
   "admin.config.share.warn-anonymous-shares-for-logged-in-users": "Ostrzegaj też zalogowanych użytkowników",
   "admin.config.share.warn-anonymous-shares-for-logged-in-users.description": "Pokazuj ostrzeżenie o anonimowym udostępnieniu również zalogowanym użytkownikom, a nie tylko anonimowym gościom. Wymaga włączenia powyższego ustawienia.",
+  "admin.config.share.anonymous-warning-message": "Własna treść ostrzeżenia",
+  "admin.config.share.anonymous-warning-message.description": "Nadpisz wbudowany tekst ostrzeżenia o anonimowym udostępnieniu dla wybranego języka. Używany zarówno na banerze strony udostępnienia, jak i w oknie potwierdzenia pobierania. Zostaw puste, aby używać wbudowanego tłumaczenia.",
   "admin.config.smtp.enabled": "Enable",
   "admin.config.smtp.enabled.description": "Czy SMTP ma zostać włączony. Ustaw to, tylko jeśli wprowadziłeś host, port, e-mail, nazwę użytkownika i hasło serwera SMTP.",
   "admin.config.smtp.host": "Host",

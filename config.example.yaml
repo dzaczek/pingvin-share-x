@@ -63,6 +63,12 @@ share:
   warnAnonymousShares: "true"
   #When the anonymous share warning is enabled, also show it to logged-in visitors instead of only anonymous ones.
   warnAnonymousSharesForLoggedInUsers: "true"
+  #Custom text for the anonymous share warning, per language. Leave empty to use the built-in translation for that language.
+  anonymousWarningMessagePl: ""
+  anonymousWarningMessageEn: ""
+  anonymousWarningMessageDe: ""
+  anonymousWarningMessageFr: ""
+  anonymousWarningMessageIt: ""
   #Maximum share expiration. Set to 0 to allow unlimited expiration.
   maxExpiration: 0 days
   #The default expiration time selected when creating a new share.

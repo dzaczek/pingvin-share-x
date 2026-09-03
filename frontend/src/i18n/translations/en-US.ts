@@ -748,6 +748,9 @@ export default {
     "Also warn logged-in users",
   "admin.config.share.warn-anonymous-shares-for-logged-in-users.description":
     "Show the anonymous share warning to logged-in users too, not just anonymous visitors. Requires the setting above to be enabled.",
+  "admin.config.share.anonymous-warning-message": "Custom warning message",
+  "admin.config.share.anonymous-warning-message.description":
+    "Override the built-in anonymous-share warning text for a specific language. Used on both the share page banner and the download confirmation. Leave empty to keep the built-in translation.",
   "admin.config.smtp.enabled": "Enable",
   "admin.config.smtp.enabled.description":
     "Whether SMTP is enabled. Only set this to true if you entered the host, port, email, user and password of your SMTP server.",
