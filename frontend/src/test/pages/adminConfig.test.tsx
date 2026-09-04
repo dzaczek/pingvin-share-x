@@ -26,11 +26,7 @@ jest.mock("next/router", () => ({
   useRouter: () => ({ query: { category: "security" }, pathname: "/admin" }),
 }));
 
-const variable = (
-  key: string,
-  type: string,
-  value: string,
-): AdminConfig =>
+const variable = (key: string, type: string, value: string): AdminConfig =>
   ({
     key,
     name: key.split(".")[1],

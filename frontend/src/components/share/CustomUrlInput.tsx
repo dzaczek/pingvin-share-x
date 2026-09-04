@@ -30,7 +30,11 @@ const CustomUrlInput = ({
   const isHydrated = useIsHydrated();
 
   const baseUrl =
-    appUrl !== defaultAppUrl ? appUrl : isHydrated ? window.location.origin : "";
+    appUrl !== defaultAppUrl
+      ? appUrl
+      : isHydrated
+        ? window.location.origin
+        : "";
 
   return (
     <>

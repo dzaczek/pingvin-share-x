@@ -25,7 +25,8 @@ const DownloadAllButton = ({
   const config = useConfig();
   const { locale } = useIntl();
 
-  const anonymousWarningOverrideKey = getAnonymousWarningConfigKeyForLocale(locale);
+  const anonymousWarningOverrideKey =
+    getAnonymousWarningConfigKeyForLocale(locale);
   const anonymousWarningMessage = anonymousWarningOverrideKey
     ? config.get(anonymousWarningOverrideKey)
     : "";

@@ -38,6 +38,7 @@ export const ANONYMOUS_WARNING_LANGUAGES = [
 export const getAnonymousWarningConfigKeyForLocale = (
   locale: string,
 ): string | undefined => {
-  return ANONYMOUS_WARNING_LANGUAGES.find((language) => language.code === locale)
-    ?.configKey;
+  return ANONYMOUS_WARNING_LANGUAGES.find(
+    (language) => language.code === locale,
+  )?.configKey;
 };

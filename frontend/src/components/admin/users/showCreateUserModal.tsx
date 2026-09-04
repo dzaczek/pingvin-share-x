@@ -25,7 +25,12 @@ const showCreateUserModal = (
   return modals.openModal({
     title: "Create user",
     children: (
-      <Body modals={modals} smtpEnabled={smtpEnabled} getUsers={getUsers} customPasswordPolicy={customPasswordPolicy} />
+      <Body
+        modals={modals}
+        smtpEnabled={smtpEnabled}
+        getUsers={getUsers}
+        customPasswordPolicy={customPasswordPolicy}
+      />
     ),
   });
 };
@@ -63,11 +68,30 @@ const Body = ({
           .min(3, t("common.error.too-short", { length: 3 })),
         password: yup
           .string()
-          .min(customPasswordPolicy.minLength, t("common.error.too-short", { length: customPasswordPolicy.minLength }))
-          .matches(customPasswordPolicy.requireLowercase ? /[a-z]/ : /.*/, t("common.error.password.lowercase"))
-          .matches(customPasswordPolicy.requireUppercase ? /[A-Z]/ : /.*/, t("common.error.password.uppercase"))
-          .matches(customPasswordPolicy.requireNumber ? /[0-9]/ : /.*/, t("common.error.password.number"))
-          .matches(customPasswordPolicy.requireSpecialCharacter ? /[^a-zA-Z0-9]/ : /.*/, t("common.error.password.special"))
+          .min(
+            customPasswordPolicy.minLength,
+            t("common.error.too-short", {
+              length: customPasswordPolicy.minLength,
+            }),
+          )
+          .matches(
+            customPasswordPolicy.requireLowercase ? /[a-z]/ : /.*/,
+            t("common.error.password.lowercase"),
+          )
+          .matches(
+            customPasswordPolicy.requireUppercase ? /[A-Z]/ : /.*/,
+            t("common.error.password.uppercase"),
+          )
+          .matches(
+            customPasswordPolicy.requireNumber ? /[0-9]/ : /.*/,
+            t("common.error.password.number"),
+          )
+          .matches(
+            customPasswordPolicy.requireSpecialCharacter
+              ? /[^a-zA-Z0-9]/
+              : /.*/,
+            t("common.error.password.special"),
+          )
           .required(t("common.error.field-required"))
           .optional(),
         storageQuotaLimit: yup

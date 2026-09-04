@@ -305,7 +305,13 @@ const ErrorTetris = ({ digits = ["4", "0", "4"] }: { digits?: string[] }) => {
       for (let x = 0; x < COLS; x++) {
         const data = g.board[y][x];
         if (!data) continue;
-        paint(x * cell, y * cell, data.color, data.digit, fading ? 1 - progress : 1);
+        paint(
+          x * cell,
+          y * cell,
+          data.color,
+          data.digit,
+          fading ? 1 - progress : 1,
+        );
       }
       if (fading) {
         ctx.globalAlpha = (1 - progress) * 0.5;
@@ -445,7 +451,11 @@ const ErrorTetris = ({ digits = ["4", "0", "4"] }: { digits?: string[] }) => {
         } else {
           g.dropTimer += dt;
           const speed = gravityMs(g.level);
-          while (g.dropTimer >= speed && !g.clearing && g.status === "playing") {
+          while (
+            g.dropTimer >= speed &&
+            !g.clearing &&
+            g.status === "playing"
+          ) {
             g.dropTimer -= speed;
             step(g);
           }
