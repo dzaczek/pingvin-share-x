@@ -157,6 +157,41 @@ export const configVariables = {
       defaultValue: "false",
       secret: false,
     },
+    warnAnonymousShares: {
+      type: "boolean",
+      defaultValue: "true",
+      secret: false,
+    },
+    warnAnonymousSharesForLoggedInUsers: {
+      type: "boolean",
+      defaultValue: "true",
+      secret: false,
+    },
+    anonymousWarningMessagePl: {
+      type: "text",
+      defaultValue: "",
+      secret: false,
+    },
+    anonymousWarningMessageEn: {
+      type: "text",
+      defaultValue: "",
+      secret: false,
+    },
+    anonymousWarningMessageDe: {
+      type: "text",
+      defaultValue: "",
+      secret: false,
+    },
+    anonymousWarningMessageFr: {
+      type: "text",
+      defaultValue: "",
+      secret: false,
+    },
+    anonymousWarningMessageIt: {
+      type: "text",
+      defaultValue: "",
+      secret: false,
+    },
     maxExpiration: {
       type: "timespan",
       defaultValue: "0 days",
