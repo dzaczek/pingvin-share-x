@@ -95,6 +95,16 @@ const getAccessLogs = async (id: string): Promise<ShareAccessLog> => {
   return (await api.get(`shares/${id}/accessLogs`)).data;
 };
 
+// admin only, reads the file server side to work out its sha256. Nothing is
+// sent anywhere, the digest is only what a VirusTotal lookup needs.
+const getFileSha256 = async (
+  shareId: string,
+  fileId: string,
+): Promise<string> => {
+  if (!isValidId(shareId)) throw new Error("Invalid Share ID");
+  return (await api.get(`shares/${shareId}/files/${fileId}/hash`)).data.sha256;
+};
+
 // admin only, queues another ClamAV scan for a share that already has files
 const rescan = async (id: string) => {
   if (!isValidId(id)) throw new Error("Invalid ID");
@@ -450,6 +460,7 @@ export default {
   expire,
   getMetaData,
   getAccessLogs,
+  getFileSha256,
   rescan,
   block,
   unblock,
