@@ -120,12 +120,9 @@ describe("createZip", () => {
   });
 
   it("does nothing when s3 is serving the files", async () => {
-    const service = construct(
-      { file: { findMany: async () => [] } },
-      {
-        get: () => true,
-      },
-    );
+    const service = construct({ file: { findMany: async () => [] } }, {
+      get: () => true,
+    });
 
     await service.createZip(SHARE_ID);
 

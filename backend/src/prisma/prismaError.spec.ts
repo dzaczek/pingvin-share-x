@@ -25,9 +25,7 @@ describe("duplicatedField", () => {
 
   // what Prisma 6 reported, kept so the helper works either way
   it("still reads the old target array", () => {
-    expect(duplicatedField(withMeta({ target: ["username"] }))).toBe(
-      "username",
-    );
+    expect(duplicatedField(withMeta({ target: ["username"] }))).toBe("username");
   });
 
   it("accepts a bare string target", () => {

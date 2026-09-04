@@ -7,9 +7,9 @@ const anchored = (relative: string) =>
 describe("toAdapterUrl", () => {
   // the shipped default, and what every existing deployment inherits
   it("keeps the default pointing at backend/data", () => {
-    expect(
-      toAdapterUrl("file:../data/pingvin-share.db?connection_limit=1"),
-    ).toBe(anchored("../data/pingvin-share.db"));
+    expect(toAdapterUrl("file:../data/pingvin-share.db?connection_limit=1")).toBe(
+      anchored("../data/pingvin-share.db"),
+    );
   });
 
   // without this the adapter opens a file with "?" in its name, which looks

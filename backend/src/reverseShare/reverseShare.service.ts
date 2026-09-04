@@ -75,10 +75,7 @@ export class ReverseShareService {
 
       return reverseShare.token;
     } catch (e) {
-      if (
-        e instanceof Prisma.PrismaClientKnownRequestError &&
-        e.code === "P2002"
-      ) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
         throw new BadRequestException(this.i18n.t("reverseShare.tokenInUse"));
       }
       throw e;
