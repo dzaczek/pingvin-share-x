@@ -479,7 +479,7 @@ export default {
   "share.copy-text-contents": "Copy file contents to clipboard",
   "share.anonymous-warning.banner.title": "Anonymous share",
   "share.anonymous-warning.banner.description":
-    "This share was created without a logged-in account. Anyone could have uploaded these files — treat and open them with the same caution you'd use for files from the open internet.",
+    "Nobody was logged in when this share was created, so there is no verified sender. Files here can be spam, a scam, or malware such as a virus. Download them only if you know who sent you this link and why.",
   "share.error.visitor-limit-exceeded.title": "Visitor limit exceeded",
   "share.error.visitor-limit-exceeded.description":
     "The visitor limit from this share has been exceeded.",
@@ -503,7 +503,7 @@ export default {
 
   "share.modal.anonymous-warning.title": "This share is anonymous",
   "share.modal.anonymous-warning.description":
-    "This file comes from an anonymous share — anyone could have uploaded it here without identity verification. Treat it with the same caution as files from the open internet: don't use it for financial or accounting purposes, and don't run it as code.",
+    "Anyone could have uploaded this file, and nothing here verifies who they are. It may be spam, a scam or phishing attempt, or malware such as a virus or ransomware. Open it only if you know who sent you this link and were expecting this file. Never run it as a program or script, never enable macros in it, and never trust payment details, invoices, or login pages it contains.",
   "share.modal.anonymous-warning.button.countdown":
     "Download in {seconds}s",
   "share.modal.anonymous-warning.button.ready": "Download",
