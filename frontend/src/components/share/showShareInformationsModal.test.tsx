@@ -1,6 +1,7 @@
 import { ColorSchemeProvider, MantineProvider } from "@mantine/core";
 import { ModalsProvider, useModals } from "@mantine/modals";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import moment from "moment";
 import { IntlProvider } from "react-intl";
 import translations from "../../i18n/translations/en-US";
 import { MyShare } from "../../types/share.type";
@@ -131,5 +132,40 @@ describe("showShareInformationsModal access log", () => {
     fireEvent.click(screen.getByText("open"));
 
     expect(await screen.findByText("91.132.8.1")).toBeInTheDocument();
+  });
+
+  // A row holds an event badge, the address, two icons, a repeat count and a
+  // timestamp, side by side. The long date format spelled the month out and
+  // pushed the count off the end, so the short one is the fix and is worth
+  // holding still.
+  it("writes the timestamp in the short format, not the spelled out one", async () => {
+    renderModal();
+    fireEvent.click(screen.getByText("open"));
+
+    const shortForm = moment("2026-01-01T00:00:00.000Z").format("lll");
+    const longForm = moment("2026-01-01T00:00:00.000Z").format("LLL");
+
+    expect(await screen.findByText(shortForm)).toBeInTheDocument();
+    expect(screen.queryByText(longForm)).not.toBeInTheDocument();
+  });
+
+  it("shows the repeat count next to the address when there was more than one hit", async () => {
+    getAccessLogs.mockResolvedValue({
+      totalEvents: 4,
+      entries: [
+        {
+          event: "VIEWED",
+          ip: "91.132.8.1",
+          count: 4,
+          firstSeen: "2026-01-01T00:00:00.000Z",
+          lastSeen: "2026-01-01T00:00:00.000Z",
+        },
+      ],
+    });
+
+    renderModal();
+    fireEvent.click(screen.getByText("open"));
+
+    expect(await screen.findByText("x4")).toBeInTheDocument();
   });
 });

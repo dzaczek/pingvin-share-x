@@ -49,6 +49,10 @@ const showShareInformationsModal = (
 
   return modals.openModal({
     title: t("account.shares.modal.share-informations"),
+    // A row of the access log carries an event badge, an address with two
+    // lookup icons, a repeat count and a timestamp, all on one line. At the
+    // default width the timestamp and the count ran into each other.
+    size: "lg",
     children: (
       <Body
         share={share}
@@ -288,8 +292,12 @@ const Body = ({
                       x{entry.count}
                     </Badge>
                   )}
-                  <Text size="xs" color="dimmed" sx={{ marginLeft: "auto" }}>
-                    {moment(entry.lastSeen).format("LLL")}
+                  <Text
+                    size="xs"
+                    color="dimmed"
+                    sx={{ marginLeft: "auto", whiteSpace: "nowrap" }}
+                  >
+                    {moment(entry.lastSeen).format("lll")}
                   </Text>
                 </Group>
               ))}
