@@ -1,3 +1,7 @@
+// Note: byteToHumanSizeString is character for character identical to the one
+// in backend/src/utils/fileSize.util.ts. Copied rather than shared, so a fix here
+// does not reach the other one.
+
 export function byteToHumanSizeString(bytes: number) {
   const sizes = ["B", "KB", "MB", "GB", "TB"];
   if (bytes == 0) return "0 Byte";
