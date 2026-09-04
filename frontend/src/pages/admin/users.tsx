@@ -79,7 +79,12 @@ const Users = () => {
         </Title>
         <Button
           onClick={() =>
-            showCreateUserModal(modals, config.get("smtp.enabled"), getUsers, customPasswordPolicy)
+            showCreateUserModal(
+              modals,
+              config.get("smtp.enabled"),
+              getUsers,
+              customPasswordPolicy,
+            )
           }
           leftIcon={<TbPlus size={20} />}
         >

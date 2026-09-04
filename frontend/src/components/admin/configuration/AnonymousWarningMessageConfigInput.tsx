@@ -1,4 +1,12 @@
-import { Box, Group, Select, Stack, Text, Textarea, Title } from "@mantine/core";
+import {
+  Box,
+  Group,
+  Select,
+  Stack,
+  Text,
+  Textarea,
+  Title,
+} from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { useState } from "react";
 import { FormattedMessage } from "react-intl";

@@ -19,7 +19,9 @@ type Nav = {
 
 // Exported for the test: given whether a worker was already in charge, decide
 // whether a controller change means a new deploy or just the first install.
-export function shouldReloadOnControllerChange(hadController: boolean): boolean {
+export function shouldReloadOnControllerChange(
+  hadController: boolean,
+): boolean {
   return hadController;
 }
 

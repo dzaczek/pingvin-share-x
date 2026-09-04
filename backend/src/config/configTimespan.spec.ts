@@ -14,9 +14,9 @@ const variables = [
 const service = () => new ConfigService(variables, {} as any);
 
 const rejects = (key: string, value: unknown) =>
-  expect(() =>
-    service().validateConfigVariable(key, value as string),
-  ).toThrow(BadRequestException);
+  expect(() => service().validateConfigVariable(key, value as string)).toThrow(
+    BadRequestException,
+  );
 
 const accepts = (key: string, value: unknown) =>
   expect(() =>

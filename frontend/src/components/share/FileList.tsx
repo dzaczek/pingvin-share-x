@@ -60,7 +60,8 @@ const FileList = ({
   const t = useTranslate();
   const { locale } = useIntl();
 
-  const anonymousWarningOverrideKey = getAnonymousWarningConfigKeyForLocale(locale);
+  const anonymousWarningOverrideKey =
+    getAnonymousWarningConfigKeyForLocale(locale);
   const anonymousWarningMessage = anonymousWarningOverrideKey
     ? config.get(anonymousWarningOverrideKey)
     : "";

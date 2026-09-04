@@ -244,7 +244,9 @@ export default function AppShellDemo() {
                 const shouldShowPrimaryColorOverride =
                   getEffectiveConfigValue("appearance.themePrimaryColor") ===
                   "custom";
-                const shouldShowCustomPasswordPolicies = getEffectiveConfigValue("security.customPasswordPolicy") === "true";
+                const shouldShowCustomPasswordPolicies =
+                  getEffectiveConfigValue("security.customPasswordPolicy") ===
+                  "true";
                 const anonymousWarningMessageKeys = [
                   "share.anonymousWarningMessagePl",
                   "share.anonymousWarningMessageEn",
