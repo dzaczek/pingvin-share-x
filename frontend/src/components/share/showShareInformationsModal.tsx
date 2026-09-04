@@ -1,4 +1,5 @@
 import {
+  ActionIcon,
   Anchor,
   Badge,
   Box,
@@ -16,6 +17,7 @@ import {
   Textarea,
   TextInput,
 } from "@mantine/core";
+import { TbInfoCircle, TbVirusSearch } from "react-icons/tb";
 import { useForm, yupResolver } from "@mantine/form";
 import { ModalsContextProps } from "@mantine/modals/lib/context";
 import moment from "moment";
@@ -27,6 +29,7 @@ import { MyShare, ShareAccessLog, UpdateShare } from "../../types/share.type";
 import { Timespan } from "../../types/timespan.type";
 import { byteToHumanSizeString } from "../../utils/fileSize.util";
 import toast from "../../utils/toast.util";
+import { HoverTip } from "../core/HoverTip";
 import CopyTextField from "../upload/CopyTextField";
 import QRCode from "./QRCode";
 import { useEffect, useState } from "react";
@@ -239,14 +242,47 @@ const Body = ({
                       ? t("account.shares.modal.accessLog.created")
                       : t("account.shares.modal.accessLog.viewed")}
                   </Badge>
-                  <Anchor
-                    href={`https://ipinfo.io/${entry.ip}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    size="sm"
-                  >
-                    {entry.ip}
-                  </Anchor>
+                  <Group spacing={4} noWrap>
+                    <Text size="sm">{entry.ip}</Text>
+                    <HoverTip
+                      label={t("account.shares.modal.accessLog.lookup.ipinfo")}
+                    >
+                      <ActionIcon
+                        component="a"
+                        href={`https://ipinfo.io/${entry.ip}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={t(
+                          "account.shares.modal.accessLog.lookup.ipinfo",
+                        )}
+                        color="blue"
+                        variant="light"
+                        size={22}
+                      >
+                        <TbInfoCircle size={14} />
+                      </ActionIcon>
+                    </HoverTip>
+                    <HoverTip
+                      label={t(
+                        "account.shares.modal.accessLog.lookup.virustotal",
+                      )}
+                    >
+                      <ActionIcon
+                        component="a"
+                        href={`https://www.virustotal.com/gui/ip-address/${entry.ip}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={t(
+                          "account.shares.modal.accessLog.lookup.virustotal",
+                        )}
+                        color="orange"
+                        variant="light"
+                        size={22}
+                      >
+                        <TbVirusSearch size={14} />
+                      </ActionIcon>
+                    </HoverTip>
+                  </Group>
                   {entry.count > 1 && (
                     <Badge size="sm" color="grape" variant="outline">
                       x{entry.count}
