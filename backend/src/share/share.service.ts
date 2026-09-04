@@ -133,11 +133,11 @@ export class ShareService {
     const sharePath = path.join(SHARE_DIRECTORY, share.id);
     const resolvedSharePath = path.resolve(sharePath);
     const resolvedShareDir = path.resolve(SHARE_DIRECTORY);
-    if (!resolvedSharePath.startsWith(resolvedShareDir) && !sharePath.startsWith(SHARE_DIRECTORY)) {
+    if (!resolvedSharePath.startsWith(`${resolvedShareDir}${path.sep}`)) {
       throw new BadRequestException("Invalid share ID");
     }
 
-    await fs.promises.mkdir(resolvedSharePath, {
+    await fs.promises.mkdir(sharePath, {
       recursive: true,
     });
 
