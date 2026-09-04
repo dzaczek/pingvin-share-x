@@ -112,6 +112,36 @@ export function getDefaultConfig(): Config[] {
       type: "boolean",
     },
     {
+      key: "share.anonymousWarningMessagePl",
+      value: "",
+      defaultValue: "",
+      type: "text",
+    },
+    {
+      key: "share.anonymousWarningMessageEn",
+      value: "",
+      defaultValue: "",
+      type: "text",
+    },
+    {
+      key: "share.anonymousWarningMessageDe",
+      value: "",
+      defaultValue: "",
+      type: "text",
+    },
+    {
+      key: "share.anonymousWarningMessageFr",
+      value: "",
+      defaultValue: "",
+      type: "text",
+    },
+    {
+      key: "share.anonymousWarningMessageIt",
+      value: "",
+      defaultValue: "",
+      type: "text",
+    },
+    {
       key: "share.autoOpenShareModal",
       value: "false",
       defaultValue: "false",
@@ -170,6 +200,18 @@ export function getDefaultConfig(): Config[] {
       value: "8",
       defaultValue: "8",
       type: "number",
+    },
+    {
+      key: "share.warnAnonymousShares",
+      value: "true",
+      defaultValue: "true",
+      type: "boolean",
+    },
+    {
+      key: "share.warnAnonymousSharesForLoggedInUsers",
+      value: "true",
+      defaultValue: "true",
+      type: "boolean",
     },
     {
       key: "smtp.enabled",

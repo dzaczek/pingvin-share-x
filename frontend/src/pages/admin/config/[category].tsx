@@ -19,6 +19,7 @@ import { TbInfoCircle } from "react-icons/tb";
 import { FormattedMessage } from "react-intl";
 import Meta from "../../../components/Meta";
 import AdminConfigInput from "../../../components/admin/configuration/AdminConfigInput";
+import AnonymousWarningMessageConfigInput from "../../../components/admin/configuration/AnonymousWarningMessageConfigInput";
 import ConfigurationHeader from "../../../components/admin/configuration/ConfigurationHeader";
 import ConfigurationNavBar from "../../../components/admin/configuration/ConfigurationNavBar";
 import LogoConfigInput from "../../../components/admin/configuration/LogoConfigInput";
@@ -244,9 +245,17 @@ export default function AppShellDemo() {
                   getEffectiveConfigValue("appearance.themePrimaryColor") ===
                   "custom";
                 const shouldShowCustomPasswordPolicies = getEffectiveConfigValue("security.customPasswordPolicy") === "true";
+                const anonymousWarningMessageKeys = [
+                  "share.anonymousWarningMessagePl",
+                  "share.anonymousWarningMessageEn",
+                  "share.anonymousWarningMessageDe",
+                  "share.anonymousWarningMessageFr",
+                  "share.anonymousWarningMessageIt",
+                ];
                 const visibleConfigVariables = configVariables.filter(
                   (configVariable) =>
-                    configVariable.key !== "appearance.customCss",
+                    configVariable.key !== "appearance.customCss" &&
+                    !anonymousWarningMessageKeys.includes(configVariable.key),
                 );
 
                 return (
@@ -413,6 +422,13 @@ export default function AppShellDemo() {
                       {/* {categoryId === "security" && shouldShowCustomPasswordPolicies && ( */}
                       {/**/}
                       {/* )} */}
+                      {categoryId == "share" && (
+                        <AnonymousWarningMessageConfigInput
+                          configVariables={configVariables}
+                          updatedConfigVariables={updatedConfigVariables}
+                          updateConfigVariable={updateConfigVariable}
+                        />
+                      )}
                     </Stack>
                   </>
                 );
