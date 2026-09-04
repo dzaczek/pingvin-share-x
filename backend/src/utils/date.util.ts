@@ -1,5 +1,10 @@
 import * as moment from "moment";
 
+// Note: stringToTimespan and timespanToString also exist in
+// frontend/src/utils/date.util.ts. They are copied rather than shared, so a fix
+// here does not reach the other one. Both sides have their own tests, and
+// neither would notice the two disagreeing.
+
 export function parseRelativeDateToAbsolute(relativeDate: string) {
   if (relativeDate == "never") return moment(0).toDate();
 
