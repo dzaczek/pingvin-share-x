@@ -63,16 +63,18 @@ export class JobsService {
       .subtract(fileRetentionPeriod.value, fileRetentionPeriod.unit)
       .toDate();
 
+    const condition = {
+      // We want to remove only shares that have an expiration date + retention period less than the current date, but not 0
+      AND: [
+        { expiration: { lt: thresholdDate } },
+        { expiration: { not: moment(0).toDate() } },
+        // a blocked share is being kept on purpose, expiry must not wipe it
+        { blockedAt: null },
+      ],
+    };
+
     const expiredShares = await this.prisma.share.findMany({
-      where: {
-        // We want to remove only shares that have an expiration date + retention period less than the current date, but not 0
-        AND: [
-          { expiration: { lt: thresholdDate } },
-          { expiration: { not: moment(0).toDate() } },
-          // a blocked share is being kept on purpose, expiry must not wipe it
-          { blockedAt: null },
-        ],
-      },
+      where: condition,
     });
 
     const neverExpires = moment(0).toDate().getTime();
@@ -90,15 +92,47 @@ export class JobsService {
       return;
     }
 
-    for (const expiredShare of expiredShares) {
-      await this.fileService.deleteAllFiles(expiredShare.id);
-      await this.prisma.share.delete({
-        where: { id: expiredShare.id },
-      });
+    const successfullyCleanedIds: string[] = [];
+    const chunkSize = 5;
+
+    for (let i = 0; i < expiredShares.length; i += chunkSize) {
+      const batch = expiredShares.slice(i, i + chunkSize);
+      const results = await Promise.allSettled(
+        batch.map(async ({ id }) => {
+          await this.fileService.deleteAllFiles(id);
+          return id;
+        }),
+      );
+
+      for (const result of results) {
+        if (result.status === "fulfilled") {
+          successfullyCleanedIds.push(result.value);
+        } else {
+          this.logger.error(
+            "Failed to delete files for an expired share",
+            result.reason instanceof Error
+              ? result.reason.stack
+              : String(result.reason),
+          );
+        }
+      }
     }
 
-    if (expiredShares.length > 0) {
-      this.logger.log(`Deleted ${expiredShares.length} expired shares`);
+    if (successfullyCleanedIds.length > 0) {
+      // Chunk the deleteMany query because SQLite limits the number of query variables (typically around 999).
+      const deleteChunkSize = 500;
+      for (let i = 0; i < successfullyCleanedIds.length; i += deleteChunkSize) {
+        const batchIds = successfullyCleanedIds.slice(i, i + deleteChunkSize);
+        await this.prisma.share.deleteMany({
+          where: {
+            id: {
+              in: batchIds,
+            },
+            ...condition,
+          },
+        });
+      }
+      this.logger.log(`Deleted ${successfullyCleanedIds.length} expired shares`);
     }
   }
 

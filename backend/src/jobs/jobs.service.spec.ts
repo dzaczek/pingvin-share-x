@@ -22,6 +22,11 @@ const build = () => {
     share: {
       findMany: async () => shares,
       delete: async ({ where }: any) => void deletedShares.push(where.id),
+      deleteMany: async ({ where }: any) => {
+        if (where && where.id && where.id.in) {
+          where.id.in.forEach((id: string) => deletedShares.push(id));
+        }
+      },
     },
     user: {
       findMany: async () => users,
