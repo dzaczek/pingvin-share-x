@@ -225,19 +225,17 @@ export class ShareService {
         this.prisma.share.update({ where: { id }, data: { isZipReady: true } }),
       );
 
-    // Send email for each recipient concurrently
-    await Promise.all(
-      share.recipients.map((recipient) =>
-        this.emailService.sendMailToShareRecipients(
-          recipient.email,
-          recipient.id,
-          share.id,
-          share.creator || share.reverseShare?.creator,
-          share.description,
-          share.expiration,
-        ),
-      ),
-    );
+    // Send email for each recipient
+    for (const recipient of share.recipients) {
+      await this.emailService.sendMailToShareRecipients(
+        recipient.email,
+        recipient.id,
+        share.id,
+        share.creator || share.reverseShare?.creator,
+        share.description,
+        share.expiration,
+      );
+    }
 
     // Auto-link email recipients who are registered users so the share appears in their dashboard
     if (this.configService.get("share.enableUserRecipients")) {
