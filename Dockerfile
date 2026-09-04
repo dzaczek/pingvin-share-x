@@ -37,7 +37,7 @@ COPY --from=backend-dependencies /opt/app/node_modules ./node_modules
 # naming the file explicitly makes tsc ignore tsconfig.json, so the compiler
 # options it needs have to be repeated here. Without them it falls back to the
 # ES3 default and chokes on the private fields in prisma's own type defs.
-RUN npm run build && npx tsc prisma/seed/config.seed.ts --outDir dist/prisma/seed --rootDir prisma/seed --target es2021 --module commonjs --skipLibCheck && npm prune --production
+RUN npm run build && npx tsc prisma/seed/config.seed.ts --outDir dist/prisma/seed --rootDir prisma/seed --target es2021 --module commonjs --skipLibCheck && npm prune --omit=dev
 
 # Stage 5: Final image
 FROM node:24-alpine AS runner
