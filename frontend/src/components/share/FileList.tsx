@@ -11,16 +11,18 @@ import { useClipboard } from "@mantine/hooks";
 import { useModals } from "@mantine/modals";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { TbDownload, TbEye, TbLink, TbClipboard } from "react-icons/tb";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import useConfig from "../../hooks/config.hook";
 import useTranslate from "../../hooks/useTranslate.hook";
 import shareService from "../../services/share.service";
 import { FileMetaData } from "../../types/File.type";
 import { Share } from "../../types/share.type";
+import { getAnonymousWarningConfigKeyForLocale } from "../../utils/anonymousWarningMessage.util";
 import { byteToHumanSizeString } from "../../utils/fileSize.util";
 import toast from "../../utils/toast.util";
 import TableSortIcon, { TableSort } from "../core/SortIcon";
 import showFilePreviewModal from "./modals/showFilePreviewModal";
+import showAnonymousDownloadWarningModal from "./showAnonymousDownloadWarningModal";
 import { HoverTip } from "../core/HoverTip";
 import api from "../../services/api.service";
 
@@ -43,17 +45,25 @@ const FileList = ({
   share,
   isLoading,
   recipientId,
+  warnAnonymous,
 }: {
   files?: FileMetaData[];
   setShare: Dispatch<SetStateAction<Share | undefined>>;
   share: Share;
   isLoading: boolean;
   recipientId?: string;
+  warnAnonymous?: boolean;
 }) => {
   const clipboard = useClipboard();
   const config = useConfig();
   const modals = useModals();
   const t = useTranslate();
+  const { locale } = useIntl();
+
+  const anonymousWarningOverrideKey = getAnonymousWarningConfigKeyForLocale(locale);
+  const anonymousWarningMessage = anonymousWarningOverrideKey
+    ? config.get(anonymousWarningOverrideKey)
+    : "";
 
   const [sort, setSort] = useState<TableSort>({
     property: "name",
@@ -197,11 +207,21 @@ const FileList = ({
                           variant="light"
                           size={25}
                           onClick={async () => {
-                            await shareService.downloadFile(
-                              share.id,
-                              file.id,
-                              recipientId,
-                            );
+                            const download = () =>
+                              shareService.downloadFile(
+                                share.id,
+                                file.id,
+                                recipientId,
+                              );
+                            if (warnAnonymous) {
+                              showAnonymousDownloadWarningModal(
+                                modals,
+                                download,
+                                anonymousWarningMessage,
+                              );
+                            } else {
+                              await download();
+                            }
                           }}
                         >
                           <TbDownload />
