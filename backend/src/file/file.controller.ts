@@ -15,6 +15,8 @@ import {
 import { SkipThrottle, Throttle } from "@nestjs/throttler";
 import * as contentDisposition from "content-disposition";
 import { Request, Response } from "express";
+import { AdministratorGuard } from "src/auth/guard/isAdmin.guard";
+import { JwtGuard } from "src/auth/guard/jwt.guard";
 import { CreateShareGuard } from "src/share/guard/createShare.guard";
 import { StrictShareOwnerGuard } from "src/share/guard/strictShareOwner.guard";
 import { IdValidation } from "src/share/guard/shareIdValidation.guard";
@@ -138,6 +140,25 @@ export class FileController {
     );
 
     return new StreamableFile(zipStream);
+  }
+
+  // Hashing reads the whole file, so this is the one route here that must not
+  // be cheap to call in a loop. Admins only, and a limit low enough that even
+  // a logged in admin cannot turn it into disk load worth noticing. The
+  // service caches the answer, so the honest cost is one read per file.
+  @Throttle({
+    default: {
+      limit: 20,
+      ttl: 60 * 1000,
+    },
+  })
+  @Get(":fileId/hash")
+  @UseGuards(JwtGuard, AdministratorGuard)
+  async getFileHash(
+    @Param("shareId") shareId: string,
+    @Param("fileId") fileId: string,
+  ) {
+    return { sha256: await this.fileService.computeSha256(shareId, fileId) };
   }
 
   @Throttle({

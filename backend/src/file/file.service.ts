@@ -10,6 +10,7 @@ import { Cache } from "cache-manager";
 import { LocalFileService } from "./local.service";
 import { S3FileService } from "./s3.service";
 import { ConfigService } from "src/config/config.service";
+import { createHash } from "crypto";
 import { Readable } from "stream";
 import { PrismaService } from "../prisma/prisma.service";
 import { EmailService } from "src/email/email.service";
@@ -17,6 +18,7 @@ import { I18nService } from "nestjs-i18n";
 
 const UPDATED_AT_THROTTLE_MS = 5 * 60 * 1000;
 const DOWNLOAD_NOTIFICATION_COOLDOWN_MS = 15 * 60 * 1000;
+const FILE_HASH_CACHE_MS = 24 * 60 * 60 * 1000;
 
 @Injectable()
 export class FileService {
@@ -165,6 +167,36 @@ export class FileService {
     });
     const storageService = this.getStorageService(share?.storageProvider);
     return storageService.get(shareId, fileId, range);
+  }
+
+  // Reads the file once and hands back its sha256, so an admin can look the
+  // file up on VirusTotal without anything being uploaded there. No column
+  // holds the digest: adding one and backfilling every existing file is a
+  // bigger change than this needed to be.
+  //
+  // The whole file goes through the hash, so this sits behind an admin guard
+  // and a low rate limit. The answer is cached because a file is never
+  // rewritten once uploaded, which keeps a second look at the same file off
+  // the disk entirely. On S3 it also pulls the object back through the
+  // server, which costs egress, so the cache matters more there.
+  async computeSha256(shareId: string, fileId: string): Promise<string> {
+    const cacheKey = `file-sha256:${shareId}:${fileId}`;
+    const cached = await this.cache.get<string>(cacheKey);
+    if (cached) return cached;
+
+    const { file } = await this.get(shareId, fileId);
+
+    if (!file) throw new NotFoundException(this.i18n.t("file.notFound"));
+
+    const hash = createHash("sha256");
+    for await (const chunk of file) {
+      hash.update(chunk);
+    }
+    const digest = hash.digest("hex");
+
+    await this.cache.set(cacheKey, digest, FILE_HASH_CACHE_MS);
+
+    return digest;
   }
 
   async remove(shareId: string, fileId: string) {

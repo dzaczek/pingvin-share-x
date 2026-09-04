@@ -10,7 +10,13 @@ import {
 import { useClipboard } from "@mantine/hooks";
 import { useModals } from "@mantine/modals";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { TbDownload, TbEye, TbLink, TbClipboard } from "react-icons/tb";
+import {
+  TbDownload,
+  TbEye,
+  TbLink,
+  TbClipboard,
+  TbVirusSearch,
+} from "react-icons/tb";
 import { FormattedMessage, useIntl } from "react-intl";
 import useConfig from "../../hooks/config.hook";
 import useTranslate from "../../hooks/useTranslate.hook";
@@ -46,6 +52,7 @@ const FileList = ({
   isLoading,
   recipientId,
   warnAnonymous,
+  isAdmin,
 }: {
   files?: FileMetaData[];
   setShare: Dispatch<SetStateAction<Share | undefined>>;
@@ -53,6 +60,7 @@ const FileList = ({
   isLoading: boolean;
   recipientId?: string;
   warnAnonymous?: boolean;
+  isAdmin?: boolean;
 }) => {
   const clipboard = useClipboard();
   const config = useConfig();
@@ -198,6 +206,38 @@ const FileList = ({
                             onClick={() => copyFileLink(file)}
                           >
                             <TbLink />
+                          </ActionIcon>
+                        </HoverTip>
+                      )}
+
+                      {isAdmin && (
+                        <HoverTip label={t("share.file.lookup.virustotal")}>
+                          <ActionIcon
+                            color="orange"
+                            variant="light"
+                            size={25}
+                            aria-label={t("share.file.lookup.virustotal")}
+                            onClick={async () => {
+                              // Opened before the request, not after it: a tab
+                              // opened once the hash comes back is a popup as
+                              // far as the browser is concerned, and gets
+                              // blocked.
+                              const tab = window.open("", "_blank");
+                              try {
+                                const sha256 = await shareService.getFileSha256(
+                                  share.id,
+                                  file.id,
+                                );
+                                const url = `https://www.virustotal.com/gui/file/${sha256}`;
+                                if (tab) tab.location.href = url;
+                                else window.open(url, "_blank");
+                              } catch (e) {
+                                tab?.close();
+                                toast.axiosError(e);
+                              }
+                            }}
+                          >
+                            <TbVirusSearch />
                           </ActionIcon>
                         </HoverTip>
                       )}

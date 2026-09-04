@@ -265,6 +265,7 @@ const Share = ({ shareId }: { shareId: string }) => {
         isLoading={!share}
         recipientId={recipientId}
         warnAnonymous={showAnonymousWarning}
+        isAdmin={!!user?.isAdmin}
       />
     </>
   );

@@ -482,6 +482,8 @@ export default {
   "share.fileCount":
     "{count, plural, =1 {# file} other {# files}} · {size} (zip file may be smaller due to compression)",
   "share.copy-text-contents": "Copy file contents to clipboard",
+  "share.file.lookup.virustotal":
+    "Check this file on VirusTotal by its sha256. The file is not uploaded anywhere, only its hash is looked up, so an unknown file shows as not found.",
   "share.anonymous-warning.banner.title": "Anonymous share",
   "share.anonymous-warning.banner.description":
     "Nobody was logged in when this share was created, so there is no verified sender. Files here can be spam, a scam, or malware such as a virus. Download them only if you know who sent you this link and why.",
@@ -509,8 +511,7 @@ export default {
   "share.modal.anonymous-warning.title": "This share is anonymous",
   "share.modal.anonymous-warning.description":
     "Anyone could have uploaded this file, and nothing here verifies who they are. It may be spam, a scam or phishing attempt, or malware such as a virus or ransomware. Open it only if you know who sent you this link and were expecting this file. Never run it as a program or script, never enable macros in it, and never trust payment details, invoices, or login pages it contains.",
-  "share.modal.anonymous-warning.button.countdown":
-    "Download in {seconds}s",
+  "share.modal.anonymous-warning.button.countdown": "Download in {seconds}s",
   "share.modal.anonymous-warning.button.ready": "Download",
 
   "share.button.download-all": "Download all",
