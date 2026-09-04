@@ -158,6 +158,8 @@ export default {
   "account.shares.modal.accessLog.created": "Utworzono",
   "account.shares.modal.accessLog.viewed": "Otworzono",
   "account.shares.modal.accessLog.totalEvents": "{count} zdarzeń łącznie",
+  "account.shares.modal.accessLog.lookup.ipinfo": "Sprawdź to IP na ipinfo.io",
+  "account.shares.modal.accessLog.lookup.virustotal": "Sprawdź to IP na VirusTotal",
   "account.shares.modal.delete.title": "Usuń udostępnianie: {share}",
   "account.shares.modal.delete.description": "Czy na pewno chcesz usunąć to udostępnianie?",
   // END /account/shares

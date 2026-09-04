@@ -193,6 +193,10 @@ export default {
   "account.shares.modal.accessLog.created": "Created",
   "account.shares.modal.accessLog.viewed": "Viewed",
   "account.shares.modal.accessLog.totalEvents": "{count} events total",
+  "account.shares.modal.accessLog.lookup.ipinfo":
+    "Look this IP up on ipinfo.io",
+  "account.shares.modal.accessLog.lookup.virustotal":
+    "Check this IP on VirusTotal",
 
   "account.shares.modal.delete.title": "Delete share: {share}",
   "account.shares.modal.delete.description":
