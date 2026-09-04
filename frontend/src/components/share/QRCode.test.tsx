@@ -47,7 +47,9 @@ describe("QRCode", () => {
     const first = deferred();
     toDataURL.mockReturnValue(first.promise);
 
-    const { rerender } = render(<QRCode link="https://example.invalid/s/one" />);
+    const { rerender } = render(
+      <QRCode link="https://example.invalid/s/one" />,
+    );
     first.resolve("data:image/png;base64,ONE");
     await waitFor(() => expect(image()).toBeInTheDocument());
 

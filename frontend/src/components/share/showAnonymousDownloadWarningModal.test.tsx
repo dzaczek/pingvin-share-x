@@ -81,7 +81,9 @@ describe("showAnonymousDownloadWarningModal", () => {
     act(() => fireEvent.click(screen.getByText("open")));
 
     expect(
-      screen.getByText(translations["share.modal.anonymous-warning.description"]),
+      screen.getByText(
+        translations["share.modal.anonymous-warning.description"],
+      ),
     ).toBeInTheDocument();
   });
 });

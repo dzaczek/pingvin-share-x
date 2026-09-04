@@ -38,9 +38,7 @@ export const withProviders = (
       toggleColorScheme={() => undefined}
     >
       <MantineProvider theme={{ colorScheme }}>
-        <UserContext.Provider
-          value={{ user, refreshUser: async () => user }}
-        >
+        <UserContext.Provider value={{ user, refreshUser: async () => user }}>
           <ConfigContext.Provider
             value={{
               configVariables: configVariables(config),

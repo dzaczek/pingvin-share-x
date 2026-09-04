@@ -86,7 +86,10 @@ describe("rotation", () => {
     const cells = makeCells("O", ["4", "0", "4"]);
     const rotated = rotateCW(cells);
     const digits = (m: (string | null)[][]) =>
-      m.flat().filter((v) => v !== null).sort();
+      m
+        .flat()
+        .filter((v) => v !== null)
+        .sort();
     expect(digits(rotated)).toEqual(digits(cells));
   });
 

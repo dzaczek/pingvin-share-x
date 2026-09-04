@@ -67,10 +67,7 @@ export class ShareController {
 
   @Post(":id/block")
   @UseGuards(JwtGuard, AdministratorGuard)
-  async blockShare(
-    @Param("id") id: string,
-    @Body() body: BlockShareDTO,
-  ) {
+  async blockShare(@Param("id") id: string, @Body() body: BlockShareDTO) {
     await this.shareService.block(id, body?.reason);
   }
 

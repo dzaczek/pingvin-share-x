@@ -81,11 +81,8 @@ export class UserSevice {
 
   async update(id: string, user: UpdateUserDto) {
     try {
-
       if (user.password && !(await this.enforcePasswordPolicy(user.password))) {
-        throw new BadRequestException(
-          this.i18n.t("auth.passwordPolicyNotMet"),
-        );
+        throw new BadRequestException(this.i18n.t("auth.passwordPolicyNotMet"));
       }
 
       const hash = user.password && (await argon.hash(user.password));

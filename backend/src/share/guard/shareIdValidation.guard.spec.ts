@@ -56,7 +56,9 @@ describe("IdValidation", () => {
   });
 
   it("checks ids coming from the query and body too", () => {
-    expect(guard.canActivate(contextFor({ query: { id: "ok_id" } }))).toBe(true);
+    expect(guard.canActivate(contextFor({ query: { id: "ok_id" } }))).toBe(
+      true,
+    );
     expect(() =>
       guard.canActivate(contextFor({ body: { id: "bad id" } })),
     ).toThrow(BadRequestException);

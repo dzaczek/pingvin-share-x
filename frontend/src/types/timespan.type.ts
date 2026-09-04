@@ -1,8 +1,3 @@
 export type TimeUnit =
-  | "minutes"
-  | "hours"
-  | "days"
-  | "weeks"
-  | "months"
-  | "years";
+  "minutes" | "hours" | "days" | "weeks" | "months" | "years";
 export type Timespan = { value: number; unit: TimeUnit };

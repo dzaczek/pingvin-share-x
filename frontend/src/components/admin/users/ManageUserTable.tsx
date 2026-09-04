@@ -93,7 +93,12 @@ const ManageUserTable = ({
                             color="blue"
                             size={25}
                             onClick={() =>
-                              showUpdateUserModal(modals, user, getUsers, customPasswordPolicy)
+                              showUpdateUserModal(
+                                modals,
+                                user,
+                                getUsers,
+                                customPasswordPolicy,
+                              )
                             }
                           >
                             <TbEdit />
