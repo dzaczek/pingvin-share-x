@@ -15,11 +15,11 @@ jest.mock("./logoPaths", () => ({
   },
 }));
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const sharp = require("sharp");
+import * as sharp from "sharp";
+const sharpFn = (sharp as any).default || sharp;
 
 const pngOf = (size: number) =>
-  sharp({
+  sharpFn({
     create: {
       width: size,
       height: size,
@@ -67,7 +67,7 @@ describe("LogoService", () => {
   it("writes a logo no wider than 900", async () => {
     await service().create(await pngOf(2000));
 
-    const meta = await sharp(path.join(root, "logo.png")).metadata();
+    const meta = await sharpFn(path.join(root, "logo.png")).metadata();
     expect(meta.width).toBe(900);
   }, 30_000);
 

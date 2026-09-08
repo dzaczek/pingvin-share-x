@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import * as fs from "fs/promises";
 import { IMAGES_PATH } from "./logoPaths";
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const sharp = require("sharp");
+import * as sharp from "sharp";
+const sharpFn = (sharp as any).default || sharp;
 
 @Injectable()
 export class LogoService {
@@ -13,7 +13,7 @@ export class LogoService {
   // either surfaced as an unhandled rejection rather than as an error the
   // admin could see.
   async create(file: Buffer) {
-    const resized = await sharp(file).resize(900).toBuffer();
+    const resized = await sharpFn(file).resize(900).toBuffer();
     await fs.writeFile(`${IMAGES_PATH}/logo.png`, resized, "binary");
 
     await this.createFavicon(file);
@@ -21,12 +21,12 @@ export class LogoService {
   }
 
   async createDark(file: Buffer) {
-    const resized = await sharp(file).resize(900).toBuffer();
+    const resized = await sharpFn(file).resize(900).toBuffer();
     await fs.writeFile(`${IMAGES_PATH}/logo-dark.png`, resized, "binary");
   }
 
   async createFavicon(file: Buffer) {
-    const resized = await sharp(file).resize(16).toBuffer();
+    const resized = await sharpFn(file).resize(16).toBuffer();
     await fs.writeFile(`${IMAGES_PATH}/favicon.ico`, resized, "binary");
   }
 
@@ -35,7 +35,7 @@ export class LogoService {
 
     await Promise.all(
       sizes.map((size) =>
-        sharp(file)
+        sharpFn(file)
           .resize(size)
           .png()
           .toFile(`${IMAGES_PATH}/icons/icon-${size}x${size}.png`),
