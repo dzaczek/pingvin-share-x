@@ -5,6 +5,9 @@ const withPWA = require("next-pwa")({
   dest: "public",
   disable: process.env.NODE_ENV === "development",
   reloadOnOnline: false,
+  // Next.js build metadata is not served at /_next/. Precaching it would
+  // return 404 and prevent the new service worker from installing.
+  buildExcludes: [/^dynamic-css-manifest\.json$/],
   runtimeCaching: [
     {
       urlPattern: /^https?.*/,
