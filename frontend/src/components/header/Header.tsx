@@ -163,10 +163,14 @@ const Header = () => {
   }
 
   const authenticatedLinks: NavLink[] = [
-    {
-      link: "/upload",
-      label: t("navbar.upload"),
-    },
+    ...(user?.allowShare !== false
+      ? [
+          {
+            link: "/upload",
+            label: t("navbar.upload"),
+          },
+        ]
+      : []),
     {
       component: <NavbarShareMenu />,
     },
@@ -203,10 +207,14 @@ const Header = () => {
 
   const mobileRootLinks: NavLink[] = user
     ? [
-        {
-          link: "/upload",
-          label: t("navbar.upload"),
-        },
+        ...(user.allowShare !== false
+          ? [
+              {
+                link: "/upload",
+                label: t("navbar.upload"),
+              },
+            ]
+          : []),
         {
           label: t("common.button.shares"),
         },
